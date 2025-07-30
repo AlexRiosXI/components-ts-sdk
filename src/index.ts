@@ -1,2 +1,2 @@
 export * from '@heroui/react';
-export *  from './components';
+export * from './components';
