@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader, Input } from '@heroui/react';
+import { Button, Card, CardBody, CardHeader, Divider, Input } from '@heroui/react';
 
 import { EyeIcon, EyeSlashIcon, EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
@@ -11,9 +11,36 @@ type LoginFormProps = {
     value: string;
   };
   loginLoading: boolean;
+  title: string;
+  callToAction: string;
+  forgotPasswordOnClick: () => void;
+  noAccountOnClick: () => void;
+  hideCreateAccount: boolean;
+  submitButtonText: string;
+  submitButtonColor:
+    | 'primary'
+    | 'default'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | undefined;
+  submitButtonLoadingText: string;
 };
 
-const LoginForm = ({ onSubmit, registerLoginInput, loginLoading }: LoginFormProps) => {
+export const LoginForm = ({
+  onSubmit,
+  registerLoginInput,
+  loginLoading,
+  title = 'Access your account',
+  callToAction = 'Access your account',
+  forgotPasswordOnClick = () => {},
+  noAccountOnClick = () => {},
+  hideCreateAccount = false,
+  submitButtonText = 'Sign in',
+  submitButtonColor = 'primary',
+  submitButtonLoadingText = 'Signing in...',
+}: LoginFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -21,10 +48,10 @@ const LoginForm = ({ onSubmit, registerLoginInput, loginLoading }: LoginFormProp
       <CardHeader className="flex flex-col items-center justify-center pb-8 text-center">
         <div className="mt-6 flex items-center gap-2">
           <h1 className="from-primary to-secondary bg-gradient-to-r bg-clip-text text-3xl font-bold text-transparent">
-            Spotlight
+            {title}
           </h1>
         </div>
-        <p className="text-foreground-500 mt-2">Accede a tu cuenta</p>
+        <p className="text-foreground-500 mt-2">{callToAction}</p>
       </CardHeader>
 
       <CardBody className="px-8 pb-8">
@@ -57,8 +84,8 @@ const LoginForm = ({ onSubmit, registerLoginInput, loginLoading }: LoginFormProp
             />
           </div>
 
-          <Button type="submit" isLoading={loginLoading} fullWidth color="primary">
-            {loginLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+          <Button color={submitButtonColor} type="submit" isLoading={loginLoading} fullWidth>
+            {loginLoading ? submitButtonLoadingText : submitButtonText}
           </Button>
         </form>
 
@@ -66,16 +93,31 @@ const LoginForm = ({ onSubmit, registerLoginInput, loginLoading }: LoginFormProp
           <p className="text-foreground-500 text-sm">
             Olvidaste tu contraseña?{' '}
             <a
-              href="#"
+              onClick={forgotPasswordOnClick}
               className="text-primary hover:text-primary-600 font-medium transition-colors duration-200"
             >
               Recuperala aquí
             </a>
           </p>
         </div>
+
+        {!hideCreateAccount && (
+          <>
+            <Divider />
+            <div className="mt-6 text-center">
+              <p className="text-foreground-500 text-sm">
+                Aun no tienes una cuenta?{' '}
+                <a
+                  onClick={noAccountOnClick}
+                  className="text-primary hover:text-primary-600 font-medium transition-colors duration-200"
+                >
+                  Registrate aquí
+                </a>
+              </p>
+            </div>
+          </>
+        )}
       </CardBody>
     </Card>
   );
 };
-
-export default LoginForm;
