@@ -20,13 +20,13 @@ import {
     endContent?: React.ReactNode;
     isDisabled?: boolean;
     isLoading?: boolean;
-    variant?: 'solid' | 'light' | 'flat' | 'faded' | 'shadow' | 'bordered' | 'faded-shadow' | 'flat-shadow';
+    variant?: 'solid' | 'light' | 'flat' | 'faded' | 'shadow' | 'bordered' | 'ghost';
     className?: string;
   }
   
-  type TableAction = {
+  type TableAction<T = any> = {
     label: string;
-    onClick: () => void;
+    onClick: (row: T) => void;
     color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'default';
     startContent?: React.ReactNode;
     endContent?: React.ReactNode;
@@ -41,22 +41,22 @@ import {
     render?: (value: any) => React.ReactNode;
   };
   
-  type DataGridProps = {
+  type DataGridProps<T = any> = {
     title: string;
     description?: string;
     isLoading: boolean;
     error?: string;
     update?: () => void | null;
-    data: any[];
+    data: T[];
     columns: TableColumn[];
     filters: Record<string, any>;
     filtersHandler: React.Dispatch<React.SetStateAction<Record<string, any>>>;
     totalPages: number;
     className?: string;
     headerActions?: HeaderAction[];
-    actions: TableAction[];
+    actions: TableAction<T>[];
   };
-  export const DataGrid  =  ({
+  export const DataGrid = <T = any>({
     title,
     description,
     isLoading,
@@ -69,20 +69,20 @@ import {
     headerActions=[],
     actions=[],
     ...props
-  }: DataGridProps) => {
+  }: DataGridProps<T>) => {
   
-    const getCells = (row) => {
+    const getCells = (row: T) => {
       return columns.map(column => (
-        <TableCell key={column.key}>{row[column.key]}</TableCell>
+        <TableCell key={column.key}>{(row as any)[column.key]}</TableCell>
       ))
     }
-    const getRows = (data) => {
+    const getRows = (data: T[]) => {
       let rows = []
       for (const row of data) {
         let cells = getCells(row)
         if (actions.length > 0) {
           cells.push(
-            <TableCell key={`action-${row.id}`}>
+            <TableCell key={`action-${(row as any).id}`}>
               {actions.map(action => (
                 <Tooltip
                 content={action.tip}
@@ -93,8 +93,7 @@ import {
                 size="sm"
                 color="primary"
                 startContent={action.startContent}
-                icon={action.icon}
-                onPress={action.onClick}></Button>
+                onPress={() => action.onClick(row)}></Button>
                 </Tooltip>
               ))}
   
@@ -102,7 +101,7 @@ import {
           )
         }
         rows.push(
-          <TableRow key={row.id}>
+          <TableRow key={(row as any).id}>
             {cells}
           </TableRow>
         )
@@ -135,7 +134,7 @@ import {
                   startContent={action.startContent}
                   endContent={action.endContent}
                   isDisabled={action.isDisabled}
-                  isLoading={action.isLoading}
+                  isLoading={action.isLoading || false}
                   className={cn(action.className)}
                   size="sm"
                 >
@@ -162,7 +161,7 @@ import {
             color="primary"
             isCompact
             total={totalPages}
-            page={filters.page}
+            page={filters['page']}
             onChange={(page) => {
               filtersHandler({
                 ...filters,
