@@ -10,7 +10,7 @@ type SelectionProps = {
   onChange: (value: any) => void;
 };
 
-const Selection = ({ label, items = [], fieldName, fieldId, value, onChange }: SelectionProps) => {
+export const SelectInput = ({ label, items = [], fieldName, fieldId, value, onChange }: SelectionProps) => {
   const [selected, setSelected] = useState(value);
   useEffect(() => {
     setSelected(value.toString());
@@ -27,4 +27,4 @@ const Selection = ({ label, items = [], fieldName, fieldId, value, onChange }: S
   );
 };
 
-export default Selection;
+
