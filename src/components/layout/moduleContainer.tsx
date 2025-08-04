@@ -1,14 +1,7 @@
-
 type ModuleContainerProps = {
-    children: React.ReactNode;
-}
+  children: React.ReactNode;
+};
 
 export const ModuleContainer = ({ children }: ModuleContainerProps) => {
-    return (  
-        <div className="w-full h-full">
-            {children}
-        </div>
-
-    );
-}
- 
+  return <div className="h-full w-full">{children}</div>;
+};

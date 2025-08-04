@@ -10,9 +10,9 @@ type SidebarLayoutProps = {
 
 export const SidebarLayout = ({ menuItems, title, children, className }: SidebarLayoutProps) => {
   return (
-    <section className={cn('flex h-screen w-screen ', className)}>
+    <section className={cn('flex h-screen w-screen', className)}>
       <SideBar menuItems={menuItems} title={title} />
-      <div className="p-4 bg-primary-500 grow-1 w-full">{children}</div>
+      <div className="bg-primary-500 w-full grow-1 p-4">{children}</div>
     </section>
   );
 };
