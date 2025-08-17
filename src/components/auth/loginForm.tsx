@@ -44,7 +44,8 @@ export const LoginForm = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <Card className="bg-content1/80 dark:bg-content1/80 w-full max-w-md border-0 shadow-2xl backdrop-blur-sm">
+    <Card className="bg-content1/80 dark:bg-content1/80 w-full max-w-md border-0 shadow-2xl backdrop-blur-sm ">
+      
       <CardHeader className="flex flex-col items-center justify-center pb-8 text-center">
         <div className="mt-6 flex items-center gap-2">
           <h1 className="from-primary to-secondary bg-gradient-to-r bg-clip-text text-3xl font-bold text-transparent">

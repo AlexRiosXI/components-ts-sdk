@@ -33,9 +33,10 @@ type TableAction<T = any> = {
   isDisabled?: boolean;
   isLoading?: boolean;
   tip?: string;
+  
 };
 
-type TableColumn = {
+type TableColumnType = {
   key: string;
   label: string;
   render?: (value: any) => React.ReactNode;
@@ -48,13 +49,16 @@ type DataGridProps<T = any> = {
   error?: string;
   update?: () => void | null;
   data: T[];
-  columns: TableColumn[];
+  columns: TableColumnType[];
   filters: Record<string, any>;
   filtersHandler: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   totalPages: number;
   className?: string;
   headerActions?: HeaderAction[];
   actions: TableAction<T>[];
+  filterContent?: React.ReactNode;
+  topContent?: React.ReactNode;
+  paginate?: boolean;
 };
 export const DataGrid = <T = any,>({
   title,
@@ -63,16 +67,27 @@ export const DataGrid = <T = any,>({
   update,
   data,
   columns,
-  filters,
+  filters={},
+  filterContent,
   filtersHandler,
   totalPages = 1,
   headerActions = [],
   actions = [],
+  topContent,
+  paginate=true,
   ...props
 }: DataGridProps<T>) => {
+
+  const renderCell = (column: TableColumnType, row: T) => {    
+    
+    if (column.render) {
+      return column.render(row);
+    }
+    return (row as any)[column.key]; 
+  };
   const getCells = (row: T) => {
     return columns.map(column => (
-      <TableCell key={column.key}>{(row as any)[column.key]}</TableCell>
+      <TableCell key={column.key}>{renderCell(column, row)}</TableCell>
     ));
   };
   const getRows = (data: T[]) => {
@@ -85,10 +100,11 @@ export const DataGrid = <T = any,>({
             {actions.map(action => (
               <Tooltip content={action.tip} isDisabled={!action.tip}>
                 <Button
+                  
                   key={action.label}
                   variant="light"
                   size="sm"
-                  color="primary"
+                  color={action.color}
                   style={{ width: '40px', minWidth: '40px' }}
                   startContent={action.startContent}
                   onPress={() => action.onClick(row)}
@@ -104,12 +120,16 @@ export const DataGrid = <T = any,>({
     return rows;
   };
 
+  
+
   return (
     <Table
       {...props}
       className={cn('w-full', props.className)}
       topContent={
+        <>
         <div className="flex items-center justify-between">
+
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-xl font-bold">{title}</h2>
@@ -137,7 +157,7 @@ export const DataGrid = <T = any,>({
             ))}
             {update && (
               <Button
-                onPress={update}
+                onPress={() => update?.()}
                 variant="light"
                 size="sm"
                 color="primary"
@@ -146,8 +166,22 @@ export const DataGrid = <T = any,>({
             )}
           </div>
         </div>
+        {topContent && (
+          <div>
+            {topContent}
+          </div>
+        )}
+        <div
+        className='flex items-center justify-between gap-2'
+
+        >
+          
+          {filterContent}
+        </div>
+        </>
       }
       bottomContent={
+        paginate && (
         <div className="flex justify-center">
           <Pagination
             showControls
@@ -163,7 +197,7 @@ export const DataGrid = <T = any,>({
             }}
           />
         </div>
-      }
+      )}
     >
       <TableHeader>
         <>
